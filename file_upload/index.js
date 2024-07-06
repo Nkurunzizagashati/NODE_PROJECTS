@@ -1,11 +1,15 @@
 import express from "express";
+import path from "path";
 
 const app = express();
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
 app.get("/", (req, res) => {
   res.render("index", { title: "Home Page", message: "Hello, EJS!" });
+});
+
+app.post("/upload", (req, res) => {
+  res.send("Uploaded");
 });
 
 app.listen(3000, () => {
