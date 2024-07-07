@@ -5,8 +5,6 @@ import dotenv from "dotenv";
 import createDbConnection from "./utils/connect_db.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import mongoose from "mongoose";
-import { cookie } from "express-validator";
 import googleAuthRouter from "./routes/auth2.js";
 import passport from "passport";
 
@@ -48,6 +46,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   res.send("Uploaded");
 });
 
-app.listen(3000, () => {
-  console.log("SERVER IS STARTED AND IS RUNNING ON PORT: 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`SERVER IS STARTED AND IS RUNNING ON PORT: ${PORT}`);
 });
