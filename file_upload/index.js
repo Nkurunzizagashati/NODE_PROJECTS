@@ -1,6 +1,6 @@
 import express from "express";
-import userRouter from "./routes/user";
-import upload from "./utils/file_upload";
+import userRouter from "./routes/user.js";
+import upload from "./utils/file_upload.js";
 
 const app = express();
 app.use("auth", userRouter);
