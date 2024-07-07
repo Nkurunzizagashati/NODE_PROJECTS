@@ -3,7 +3,8 @@ import userRouter from "./routes/user.js";
 import upload from "./utils/file_upload.js";
 
 const app = express();
-app.use("auth", userRouter);
+app.use(express.json());
+app.use("/user", userRouter);
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
