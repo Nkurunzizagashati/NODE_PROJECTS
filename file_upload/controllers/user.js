@@ -20,6 +20,8 @@ const loginUser = async (req, res) => {
 
     if (!passwordMatches)
       return res.status(401).json({ error: "Incorrect email or password" });
+
+    req.session.user = user;
     res.json({ msg: "User Loged in successfully!" });
   } catch (error) {
     errorHandler(req, res, error);
@@ -44,6 +46,7 @@ const registerUser = async (req, res) => {
 
     data.password = hashedPassword;
     const newUser = await User.create(data);
+    req.session.user = newUser;
     return res.status(201).json({
       msg: "User registered successfully!",
       newUser: {
@@ -59,6 +62,12 @@ const registerUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
+    const user = req.session.user;
+
+    if (!user.isAdmin)
+      return res
+        .status(403)
+        .json({ error: "You are not allowed to perform this action" });
     const users = await User.find({}, "firstname lastname email");
     if (users) res.json({ users });
   } catch (error) {

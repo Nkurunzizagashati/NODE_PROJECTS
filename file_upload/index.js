@@ -17,7 +17,7 @@ app.use(
     resave: false,
 
     store: MongoStore.create({
-      client: mongoose.connection.getClient(),
+      mongoUrl: process.env.MONGODB_URI,
     }),
     cookie: {
       maxAge: 60000 * 60 * 48,
