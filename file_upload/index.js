@@ -7,6 +7,8 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import { cookie } from "express-validator";
+import googleAuthRouter from "./routes/auth2.js";
+import passport from "passport";
 
 const app = express();
 app.use(express.json());
@@ -24,6 +26,8 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 dotenv.config();
 
@@ -32,6 +36,7 @@ dotenv.config();
 createDbConnection();
 
 app.use("/user", userRouter);
+app.use("/auth", googleAuthRouter);
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Google OAuth2 with Express</title>
+  </head>
+  <body>
+    <% if (user) { %>
+    <h1>Hello, <%= user.displayName %>!</h1>
+    <a href="/auth/logout">Logout</a>
+    <% } else { %>
+    <h1>Hello, Guest!</h1>
+    <a href="/auth/google">Login with Google</a>
+    <% } %>
+  </body>
+</html>
