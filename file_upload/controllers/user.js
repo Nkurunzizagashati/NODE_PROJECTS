@@ -45,4 +45,13 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "firstname lastname email");
+    if (users) res.json({ users });
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+};
+
+export { loginUser, registerUser, getAllUsers };
