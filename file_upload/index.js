@@ -3,9 +3,27 @@ import userRouter from "./routes/user.js";
 import upload from "./utils/file_upload.js";
 import dotenv from "dotenv";
 import createDbConnection from "./utils/connect_db.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
+import { cookie } from "express-validator";
 
 const app = express();
 app.use(express.json());
+app.use(
+  session({
+    secret: "My secret",
+    saveUninitialized: false,
+    resave: false,
+
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+    }),
+    cookie: {
+      maxAge: 60000 * 60 * 48,
+    },
+  })
+);
 
 dotenv.config();
 
