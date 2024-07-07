@@ -4,20 +4,26 @@ import User from "../models/user.js";
 import errorHandler from "../utils/errorHandler.js";
 
 const loginUser = async (req, res) => {
-  const result = validationResult(req);
+  try {
+    const result = validationResult(req);
 
-  if (!result.isEmpty()) {
-    return res.status(400).json({ error: result.errors[0].msg });
+    if (!result.isEmpty()) {
+      return res.status(400).json({ error: result.errors[0].msg });
+    }
+
+    const data = matchedData(req);
+
+    const user = await User.findOne({ email: data.email });
+    if (!user)
+      return res.status(401).json({ error: "Incorect email or password" });
+    const passwordMatches = await comparePassword(data.password, user.password);
+
+    if (!passwordMatches)
+      return res.status(401).json({ error: "Incorrect email or password" });
+    res.json({ msg: "User Loged in successfully!" });
+  } catch (error) {
+    errorHandler(req, res, error);
   }
-
-  const data = matchedData(req);
-
-  const user = await User.find({ email: data.email });
-  const passwordMatches = await comparePassword(data.password, user.password);
-
-  if (!passwordMatches)
-    return res.status(403).json({ error: "Incorrect email or password" });
-  res.json({ msg: "User Loged in successfully!" });
 };
 
 const registerUser = async (req, res) => {
