@@ -1,9 +1,9 @@
 import { matchedData, validationResult } from "express-validator";
-import { hashPass } from "../utils/helpers.js";
+import { comparePassword, hashPass } from "../utils/helpers.js";
 import User from "../models/user.js";
 import errorHandler from "../utils/errorHandler.js";
 
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
   const result = validationResult(req);
 
   if (!result.isEmpty()) {
@@ -11,6 +11,12 @@ const loginUser = (req, res) => {
   }
 
   const data = matchedData(req);
+
+  const user = await User.find({ email: data.email });
+  const passwordMatches = await comparePassword(data.password, user.password);
+
+  if (!passwordMatches)
+    return res.status(403).json({ error: "Incorrect email or password" });
   res.json({ msg: "User Loged in successfully!" });
 };
 
