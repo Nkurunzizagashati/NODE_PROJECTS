@@ -15,6 +15,8 @@ const createDbConnection = () => {
       console.log("CONNECTED TO DB");
     })
     .catch((err) => {
-      console.error(`Failed to connect to the db: ${err}`);
+      console.error(`FAILED TO CONNECT TO THE DB: ${err}`);
     });
 };
+
+export default createDbConnection;

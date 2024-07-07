@@ -1,9 +1,18 @@
 import express from "express";
 import userRouter from "./routes/user.js";
 import upload from "./utils/file_upload.js";
+import dotenv from "dotenv";
+import createDbConnection from "./utils/connect_db.js";
 
 const app = express();
 app.use(express.json());
+
+dotenv.config();
+
+// CONNECTING TO DB
+
+createDbConnection();
+
 app.use("/user", userRouter);
 app.set("view engine", "ejs");
 
