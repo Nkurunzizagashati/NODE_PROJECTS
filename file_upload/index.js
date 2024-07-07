@@ -1,22 +1,10 @@
 import express from "express";
-import path from "path";
-import multer from "multer";
+import userRouter from "./routes/user";
+import upload from "./utils/file_upload";
 
 const app = express();
+app.use("auth", userRouter);
 app.set("view engine", "ejs");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    console.log(file);
-    cb(null, "Images");
-  },
-  filename: (req, file, cb) => {
-    console.log(file);
-    cb(null, Date.now() + "_" + path.basename(file.originalname));
-  },
-});
-
-const upload = multer({ storage: storage });
 
 app.get("/", (req, res) => {
   res.render("index", { title: "Home Page", message: "Hello, EJS!" });
