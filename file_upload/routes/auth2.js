@@ -22,7 +22,7 @@ router.get(
   (req, res) => {
     // Save the authenticated user to the session
     req.session.user = req.user; // Save the user object in session
-    res.redirect("/auth/profile", { user: req.session.user });
+    res.redirect("/auth/profile");
   }
 );
 

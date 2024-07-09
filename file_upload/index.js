@@ -7,6 +7,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import googleAuthRouter from "./routes/auth2.js";
 import passport from "passport";
+import postRouter from "./routes/post.js";
 
 const app = express();
 app.use(express.json());
@@ -35,6 +36,7 @@ createDbConnection();
 
 app.use("/user", userRouter);
 app.use("/auth", googleAuthRouter);
+app.use("/posts", postRouter);
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
