@@ -1,0 +1,12 @@
+{
+  "presets": [
+    [
+      "@babel/prese-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}
