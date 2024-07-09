@@ -22,7 +22,7 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "Incorrect email or password" });
 
     req.session.user = user;
-    res.json({ msg: "User Loged in successfully!" });
+    res.status(200).json({ msg: "User Loged in successfully!" });
   } catch (error) {
     errorHandler(req, res, error);
   }
@@ -69,7 +69,7 @@ const getAllUsers = async (req, res) => {
         .status(403)
         .json({ error: "You are not allowed to perform this action" });
     const users = await User.find({}, "firstname lastname email");
-    if (users) res.json({ users });
+    if (users) res.status(200).json({ users });
   } catch (error) {
     errorHandler(req, res, error);
   }
