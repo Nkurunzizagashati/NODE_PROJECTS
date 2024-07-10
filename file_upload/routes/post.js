@@ -1,49 +1,89 @@
 import express from "express";
+import { upload } from "../utils/file_upload.js";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import crypto from "crypto";
+import path from "path";
+import dotenv from "dotenv";
 import Post from "../models/post.js";
-import upload from "../utils/file_upload.js";
+
+dotenv.config();
+
+const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+const awsRegion = process.env.AWS_REGION;
+const s3BucketName = process.env.S3_BUCKET_NAME;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: awsAccessKeyId,
+    secretAccessKey: awsSecretAccessKey,
+  },
+  region: awsRegion,
+});
 
 const router = express.Router();
 
-router.get("/upload", (req, res) => {
-  res.render("index.js");
+router.get("/api", (req, res) => {
+  res.send(`
+    <div>
+      <h1>Upload an image</h1>
+      <form method="post" action="/api/posts" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*" />
+        <input type="text" name="title" />
+        <input type="submit" />
+      </form>
+    </div>
+  `);
 });
 
-// Upload endpoint
-router.post("/upload", upload.single("image"), async (req, res) => {
-  const imageUrl = req.file.location;
-  const imageKey = req.file.key;
+router.get("/api/posts", async (req, res) => {
+  const file = await Post.findOne({ title: "Clock" });
+  console.log(file);
 
-  const post = new Post({ key: imageKey, url: imageUrl });
-  await post.save();
-
-  res.send({
-    message: "Image uploaded successfully!",
-    imageUrl: imageUrl,
-  });
-});
-
-// Retrieve list of images
-router.get("/images", async (req, res) => {
-  const posts = await Post.find();
-  res.send(posts);
-});
-
-// Serve uploaded images
-router.get("/images/:key", (req, res) => {
-  const params = {
-    Bucket: bucketName,
-    Key: req.params.key,
+  const getObjectParams = {
+    Bucket: s3BucketName,
+    Key: file.url,
   };
 
-  s3.getObject(params, (err, data) => {
-    if (err) {
-      return res.status(404).send(err);
-    }
-
-    res.writeHead(200, { "Content-Type": data.ContentType });
-    res.write(data.Body, "binary");
-    res.end(null, "binary");
+  const command = new GetObjectCommand(getObjectParams);
+  const url = await getSignedUrl(s3, command, {
+    expiresIn: 3600,
   });
+
+  res.send(url);
+});
+
+router.post("/api/posts", upload.single("video"), async (req, res) => {
+  console.log("req.body:", req.body);
+  console.log("req.file", req.file);
+
+  const randomFileName = (bytes = 10) =>
+    crypto.randomBytes(bytes).toString("hex");
+
+  const fileName = randomFileName() + path.extname(req.file.originalname);
+  const params = {
+    Bucket: s3BucketName,
+    Key: fileName,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype,
+  };
+
+  const command = new PutObjectCommand(params);
+
+  try {
+    const data = await s3.send(command);
+    const post = await Post.create({ title: req.body.title, url: fileName });
+    console.log("Upload successful:", data);
+    res.send(post);
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).send("Error uploading image");
+  }
 });
 
 export default router;

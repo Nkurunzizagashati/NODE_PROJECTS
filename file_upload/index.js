@@ -1,6 +1,6 @@
 import express from "express";
 import userRouter from "./routes/user.js";
-import upload from "./utils/file_upload.js";
+import { upload } from "./utils/file_upload.js";
 import dotenv from "dotenv";
 import createDbConnection from "./utils/connect_db.js";
 import session from "express-session";
@@ -36,7 +36,7 @@ createDbConnection();
 
 app.use("/user", userRouter);
 app.use("/auth", googleAuthRouter);
-app.use("/posts", postRouter);
+app.use("", postRouter);
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
