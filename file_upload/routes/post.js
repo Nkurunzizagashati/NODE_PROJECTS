@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/api", (req, res) => {
   res.send(`
     <div>
-      <h1>Upload an image</h1>
+      <h1>Upload a Video</h1>
       <form method="post" action="/api/posts" enctype="multipart/form-data">
         <input type="file" name="video" accept="video/*" />
         <input type="text" name="title" />

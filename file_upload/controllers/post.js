@@ -9,6 +9,7 @@ import crypto from "crypto";
 import path from "path";
 import dotenv from "dotenv";
 import Post from "../models/post.js";
+import errorHandler from "../utils/errorHandler.js";
 
 dotenv.config();
 
@@ -78,20 +79,24 @@ const createPost = async (req, res) => {
  * @returns {Promise<void>} Sends the signed URL in the response.
  */
 const getPost = async (req, res) => {
-  const file = await Post.findOne({ title: "Clock" });
-  console.log(file);
+  try {
+    const file = await Post.findOne({ title: "Clock" });
+    console.log(file);
 
-  const getObjectParams = {
-    Bucket: s3BucketName,
-    Key: file.url,
-  };
+    const getObjectParams = {
+      Bucket: s3BucketName,
+      Key: file.url,
+    };
 
-  const command = new GetObjectCommand(getObjectParams);
-  const url = await getSignedUrl(s3, command, {
-    expiresIn: 3600,
-  });
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: 3600,
+    });
 
-  res.send(url);
+    res.send(url);
+  } catch (error) {
+    errorHandler(res, res, error);
+  }
 };
 
 export { createPost, getPost };
