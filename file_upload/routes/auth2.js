@@ -5,17 +5,30 @@ import User from "../models/user.js";
 
 const router = express.Router();
 
+/**
+ * @route GET /auth/google-login
+ * @description Renders the Google login page
+ * @access Public
+ */
 router.get("/google-login", (req, res) => {
-  //   return res.send("hello");
   res.render("googleLogin", { user: req.user });
 });
 
-// Login route
+/**
+ * @route GET /auth/google
+ * @description Initiates Google OAuth authentication
+ * @access Public
+ */
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+/**
+ * @route GET /auth/google/callback
+ * @description Handles the callback after Google OAuth authentication
+ * @access Public
+ */
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
@@ -26,7 +39,11 @@ router.get(
   }
 );
 
-// Define a route to display session information for testing
+/**
+ * @route GET /auth/profile
+ * @description Displays the profile of the logged-in user
+ * @access Public
+ */
 router.get("/profile", (req, res) => {
   if (req.session.user) {
     console.log(req.session.user);
@@ -38,6 +55,11 @@ router.get("/profile", (req, res) => {
   }
 });
 
+/**
+ * @route GET /auth/logout
+ * @description Logs out the user and destroys the session
+ * @access Public
+ */
 router.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -51,4 +73,5 @@ router.get("/logout", (req, res) => {
     });
   });
 });
+
 export default router;

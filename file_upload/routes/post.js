@@ -4,6 +4,13 @@ import { createPost, getPost } from "../controllers/post.js";
 
 const router = express.Router();
 
+/**
+ * GET /api
+ * Renders a web page with a form for uploading a video and a title
+ * @param {Object} req - The Express request object
+ * @param {Object} res - The Express response object
+ * @returns {void}
+ */
 router.get("/api", (req, res) => {
   res.send(`
     <div>
@@ -17,8 +24,22 @@ router.get("/api", (req, res) => {
   `);
 });
 
+/**
+ * GET /api/posts
+ * Retrieves a list of all posts
+ * @param {Object} req - The Express request object
+ * @param {Object} res - The Express response object
+ * @returns {void}
+ */
 router.get("/api/posts", getPost);
 
+/**
+ * POST /api/posts
+ * Uploads a video and creates a new post
+ * @param {Object} req - The Express request object
+ * @param {Object} res - The Express response object
+ * @returns {void}
+ */
 router.post("/api/posts", upload.single("video"), createPost);
 
 export default router;
