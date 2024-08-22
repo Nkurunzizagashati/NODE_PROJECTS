@@ -4,10 +4,13 @@ import User from './Components/User';
 
 function App() {
 	return (
-		<div className="contents">
-			<Aside />
-			<User />
-		</div>
+		<>
+			<h1 className="header">LOADING SKELETONS</h1>
+			<div className="contents">
+				<Aside />
+				<User />
+			</div>
+		</>
 	);
 }
 

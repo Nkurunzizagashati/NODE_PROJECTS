@@ -1,4 +1,4 @@
-const componentName = () => {
+const Aside = () => {
 	return (
 		<div className="aside">
 			<h2>Aside contents</h2>
@@ -6,4 +6,4 @@ const componentName = () => {
 	);
 };
 
-export default componentName;
+export default Aside;
