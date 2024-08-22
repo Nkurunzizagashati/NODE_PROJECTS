@@ -14,12 +14,14 @@ const User = () => {
 	return (
 		<div className="user">
 			<h2>User Profile</h2>
-			{profile && (
+			{profile ? (
 				<div className="profile">
 					<h3>{profile.username}</h3>
 					<p>{profile.email}</p>
 					<a href={profile.website}>{profile.website}</a>
 				</div>
+			) : (
+				<div>Loading...</div>
 			)}
 		</div>
 	);
